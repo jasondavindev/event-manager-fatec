@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import BlogApi from '../services/api';
+import BlogApi from '@/services/api';
 
 export default {
   data() {

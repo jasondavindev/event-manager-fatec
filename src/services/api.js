@@ -5,11 +5,15 @@ const axiosInstance = axios.create({
 });
 
 export default {
-  async createUser({ name, email }) {
-    return axiosInstance.post('/v1/users', { name, email });
+  async findUser(data) {
+    return axiosInstance.post(
+      '/users',
+      { name: data.username, password: data.password },
+      { auth: data },
+    );
   },
 
-  async findUser({ name }) {
-    return axiosInstance.get(`/v1/users/${name}`);
+  async createEvent({ name, eventDate }, { user }) {
+    return axiosInstance.post('/events', { name, eventDate }, { auth: user });
   },
 };

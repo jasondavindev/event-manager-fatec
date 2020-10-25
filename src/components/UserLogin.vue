@@ -6,7 +6,11 @@
           <b-form-input v-model="name" placeholder="Usuário"></b-form-input>
         </div>
         <div class="mt-2">
-          <b-form-input v-model="email" placeholder="E-mail"></b-form-input>
+          <b-form-input
+            v-model="password"
+            placeholder="Senha"
+            type="password"
+          ></b-form-input>
         </div>
         <div class="mt-3">
           <b-button type="submit" variant="outline-primary">Entrar</b-button>
@@ -17,16 +21,19 @@
 </template>
 
 <script>
-import BlogApi from '../services/api';
+import { mapActions } from 'vuex';
+import BlogApi from '@/services/api';
 
 export default {
   data() {
     return {
       name: '',
-      email: '',
+      password: '',
     };
   },
   methods: {
+    ...mapActions(['setUser']),
+
     async onSubmit() {
       if (!this.validateForm()) return;
 
@@ -34,18 +41,25 @@ export default {
     },
 
     validateForm() {
-      return this.name && this.email;
+      return this.name && this.password;
+    },
+
+    invalidUser() {
+      alert('Usuário ou senha incorretos!');
     },
 
     async findUser() {
       try {
         const { data } = await BlogApi.findUser({
-          name: this.name,
+          username: this.name,
+          password: this.password,
         });
 
-        return data;
+        this.setUser(data);
+        this.$router.push({ name: 'Event' });
       } catch (error) {
-        return console.error(error);
+        if (error.response.status === 401) this.invalidUser();
+        else alert('Erro interno');
       }
     },
   },
