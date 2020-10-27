@@ -16,4 +16,8 @@ export default {
   async createEvent({ name, eventDate }, { user }) {
     return axiosInstance.post('/events', { name, eventDate }, { auth: user });
   },
+
+  async findEvent({ id, user }) {
+    return axiosInstance.get(`/events?id=${id}`, { auth: user });
+  },
 };

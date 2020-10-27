@@ -42,6 +42,8 @@ export default {
     async createEvent() {
       if (!this.isValidateForm()) return;
 
+      const { name: username, password } = this.user;
+
       try {
         const { data } = await BlogApi.createEvent(
           {
@@ -49,8 +51,10 @@ export default {
             eventDate: this.eventDate,
           },
           {
-            username: this.user.name,
-            password: this.user.password,
+            user: {
+              username,
+              password,
+            },
           },
         );
 
