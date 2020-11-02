@@ -17,5 +17,10 @@ export default new Router({
       name: 'Event',
       component: Event,
     },
+    {
+      path: '/event/:id',
+      name: 'EventEdit',
+      component: () => import('../views/EventEdit.vue'),
+    },
   ],
 });

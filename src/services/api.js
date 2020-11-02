@@ -20,4 +20,16 @@ export default {
   async findEvent({ id, user }) {
     return axiosInstance.get(`/events?id=${id}`, { auth: user });
   },
+
+  async deleteEvent({ id, user }) {
+    return axiosInstance.delete(`/events?id=${id}`, { auth: user });
+  },
+
+  async getEvents({ user }) {
+    return axiosInstance.get('/events', { auth: user });
+  },
+
+  async updateEvent({ id, event, user }) {
+    return axiosInstance.put(`/events?id=${id}`, event, { auth: user });
+  },
 };

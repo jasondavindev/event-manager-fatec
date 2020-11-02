@@ -3,8 +3,10 @@
     <b-card :title="name">
       <div>
         <p>
-          <span>Data:</span> <span>{{ eventDate }}</span>
+          <span>Data:</span> <span>{{ eventDate | toDate }}</span>
         </p>
+        <b-button @click="editEvent">Editar</b-button>
+        <b-button @click="deleteEvent">Apagar</b-button>
       </div>
     </b-card>
   </div>
@@ -12,43 +14,50 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import BlogApi from '@/services/api';
+import BlogApi from '../services/api';
 
 export default {
   name: 'EventView',
+
   computed: {
     ...mapGetters(['user']),
   },
-  props: ['id'],
-  data() {
-    return {
-      name: '',
-      eventDate: '',
-    };
-  },
+
+  props: ['id', 'name', 'eventDate'],
+
   methods: {
-    async findEvent() {
+    async deleteEvent() {
       const { name: username, password } = this.user;
+      const id = this.id;
 
       try {
-        const { data } = await BlogApi.findEvent({
-          id: this.id,
-          user: {
-            username,
-            password,
-          },
+        const { data } = await BlogApi.deleteEvent({
+          id,
+          user: { username, password },
         });
 
-        return data;
+        this.emitDeleteEvent();
       } catch (error) {
-        alert('Ocorreu algum erro');
+        if (error.response && error.response.status === 401)
+          return alert('Você não tem permissão para apagar eventos');
+
+        alert('Ocorreu algum erro ao tentar apagar o evento');
       }
     },
+
+    emitDeleteEvent() {
+      this.$emit('deleteEvent', { id: this.id });
+    },
+
+    editEvent() {
+      this.$router.push(`/event/${this.id}`);
+    },
   },
-  async mounted() {
-    const { id, name, eventDate } = await this.findEvent();
-    this.name = name;
-    this.eventDate = new Date(eventDate).toLocaleString();
+
+  filters: {
+    toDate(date) {
+      return new Date(date).toLocaleString();
+    },
   },
 };
 </script>

@@ -27,17 +27,14 @@ export default {
   computed: {
     ...mapGetters(['user']),
   },
-  mounted() {
-    if (!this.isLogged()) {
-      this.$router.push({ name: 'Home' });
-    }
-  },
+
   data() {
     return {
       name: '',
       eventDate: '',
     };
   },
+
   methods: {
     async createEvent() {
       if (!this.isValidateForm()) return;
@@ -58,16 +55,24 @@ export default {
           },
         );
 
-        console.log(data);
+        this.resetFields();
+        this.emitCreateEvent(data);
       } catch (error) {
         alert('Ocorreu algum erro');
       }
     },
+
     isValidateForm() {
       return this.name && this.eventDate;
     },
-    isLogged() {
-      return this.user.id !== null;
+
+    emitCreateEvent(data) {
+      this.$emit('createEvent', data);
+    },
+
+    resetFields() {
+      this.name = '';
+      this.eventDate = '';
     },
   },
 };
